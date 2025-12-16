@@ -69,7 +69,6 @@ export const App: React.FC = () => {
     }
   };
 
-  /* ----------------------- DELETE ----------------------- */
   const handleDeleteTodo = async (todoId: number) => {
     setDeletingIds(prev => [...prev, todoId]);
 
