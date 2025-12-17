@@ -17,6 +17,7 @@ body {
 }
 
 .notification.hidden {
+  visibility: hidden;
   pointer-events: none;
   min-height: 0;
   opacity: 0;

@@ -5,7 +5,7 @@ import { Todo } from '../types/Todo';
 
 type Props = {
   todo: Todo;
-  onDelete: (id: number) => void;
+  onDelete: (id: number) => Promise<void>;
   isDeleting: boolean;
   onToggle: (todo: Todo) => Promise<void>;
   onRename: (todo: Todo, newTitle: string) => Promise<void>;
@@ -53,19 +53,17 @@ export const TodoItem: React.FC<Props> = ({
       return;
     }
 
-    if (!trimmed) {
-      await onDelete(todo.id);
-      cancelEdit();
-
-      return;
-    }
-
     setIsUpdating(true);
-    try {
-      const updated = { ...todo, title: trimmed };
 
-      await onRename(updated, trimmed);
+    try {
+      if (!trimmed) {
+        await onDelete(todo.id);
+      } else {
+        await onRename(todo, trimmed);
+      }
+
       cancelEdit();
+    } catch {
     } finally {
       setIsUpdating(false);
     }
@@ -116,7 +114,11 @@ export const TodoItem: React.FC<Props> = ({
             className="todo__title-field"
             value={editedTitle}
             onChange={e => setEditedTitle(e.target.value)}
-            onBlur={saveEdit}
+            onBlur={() => {
+              if (!isUpdating) {
+                saveEdit();
+              }
+            }}
             onKeyUp={e => {
               if (e.key === 'Escape') {
                 cancelEdit();

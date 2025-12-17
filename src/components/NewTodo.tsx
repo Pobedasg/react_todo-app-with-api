@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import classNames from 'classnames';
 import { Todo } from '../types/Todo';
 
 type Props = {
-  onAdd: (title: string) => void;
+  onAdd: (title: string) => Promise<boolean>;
   disabled?: boolean;
   todos: Todo[];
   onToggleAll: (completed: boolean) => Promise<void>;
+  inputRef?: React.RefObject<HTMLInputElement>;
+  isLoading?: boolean;
 };
 
 export const NewTodo: React.FC<Props> = ({
@@ -14,11 +16,17 @@ export const NewTodo: React.FC<Props> = ({
   disabled = false,
   todos,
   onToggleAll,
+  inputRef,
+  isLoading = false,
 }) => {
   const [title, setTitle] = useState('');
   const [isTogglingAll, setIsTogglingAll] = useState(false);
+  const localInputRef = useRef<HTMLInputElement>(null);
 
-  const allCompleted = todos.length > 0 && todos.every(t => t.completed);
+  const actualRef = inputRef || localInputRef;
+
+  const allCompleted = todos.length > 0 && todos.every(todo => todo.completed);
+  const hasTodos = todos.length > 0;
 
   const handleToggleAll = async () => {
     setIsTogglingAll(true);
@@ -26,30 +34,32 @@ export const NewTodo: React.FC<Props> = ({
     setIsTogglingAll(false);
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    const trimmed = title.trim();
+    const success = await onAdd(title);
 
-    if (trimmed) {
-      onAdd(trimmed);
+    if (success) {
       setTitle('');
     }
   };
 
   return (
     <header className="todoapp__header">
-      <button
-        type="button"
-        className={classNames('todoapp__toggle-all', {
-          active: allCompleted,
-        })}
-        data-cy="ToggleAllButton"
-        onClick={handleToggleAll}
-        disabled={disabled || isTogglingAll}
-      />
+      {!isLoading && hasTodos && (
+        <button
+          type="button"
+          className={classNames('todoapp__toggle-all', {
+            active: allCompleted,
+          })}
+          data-cy="ToggleAllButton"
+          onClick={handleToggleAll}
+          disabled={disabled || isTogglingAll}
+        />
+      )}
 
       <form onSubmit={handleSubmit}>
         <input
+          ref={actualRef}
           data-cy="NewTodoField"
           type="text"
           className="todoapp__new-todo"
