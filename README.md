@@ -1,50 +1,43 @@
-# React Todo App with API (complete)
+# React Todo App
 
-It is the third part of the React Todo App with API.
+A task manager built with React and TypeScript on top of a REST API. Tasks are loaded from and saved to the server, with loading and error states for every request.
 
-Take your code implemented for [Add and Delete](https://github.com/mate-academy/react_todo-app-add-and-delete)
-and implement the ability to toggle and rename todos.
+**Live demo:** https://pobedasg.github.io/react_todo-app-with-api/
 
-> Here is [the working example](https://mate-academy.github.io/react_todo-app-with-api/)
+## Features
 
-## Toggling a todo status
+- Add, delete and complete tasks (CRUD through a REST API)
+- Rename a task on double click: save with Enter or on blur, cancel with Esc, an empty title deletes the task
+- Toggle all tasks at once and clear the completed ones
+- Filter by status: all, active, completed
+- Validation of empty titles
+- Loading overlay on the task being changed and error notifications when a request fails
 
-Toggle the `completed` status on `TodoStatus` change:
-- Install Prettier Extention and use this [VSCode settings](https://mate-academy.github.io/fe-program/tools/vscode/settings.json) to enable format on save.
-- covered the todo with a loader overlay while waiting for API response;
-- the status should be changed on success;
-- show the `Unable to update a todo` notification in case of API error.
+## Tech stack
 
-Add the ability to toggle the completed status of all the todos with the `toggleAll` checkbox:
+React 18 · TypeScript · Vite · SCSS · Bulma
 
-- `toggleAll` button should have `active` class only if all the todos are completed;
-- `toggleAll` click changes its status to the opposite one, and sets this new status to all the todos;
-- it should work the same as several individual updates of the todos which statuses were actually changed;
-- don't send requests for the todos that were not changed;
+## Project structure
 
-## Renaming a todo
+```
+src/
+  api/          requests to the server
+  components/   NewTodo, TodoList, TodoItem, Filter, Footer, ErrorNotification
+  constants/    error messages
+  types/        Todo and FilterStatus types
+  utils/        fetch client and filtering helpers
+```
 
-Implement the ability to edit a todo title on double click:
+## Run locally
 
-- show the edit form instead of the title and remove button;
-- saves changes on the form submit (just press `Enter`);
-- save changes when the field loses focus (`onBlur`);
-- if the new title is the same as the old one just cancel editing;
-- cancel editing on `Esс` key `keyup` event;
-- if the new title is empty delete the todo the same way the `x` button does it;
-- if the title was changed show the loader while waiting for the API response;
-- update the todo title on success;
-- show `Unable to update a todo` in case of API error;
-- or the deletion error message if we tried to delete the todo.
+```bash
+git clone https://github.com/Pobedasg/react_todo-app-with-api.git
+cd react_todo-app-with-api
+git checkout developo
+npm install
+npm start
+```
 
-## If you want to enable tests
-- open `cypress/integration/page.spec.js`
-- replace `describe.skip` with `describe` for the root `describe`
+## About this project
 
-> ❗❗All tests should pass, even if some behaviour is not well explained in the task❗❗
-
-## Instructions
-
-- Implement a solution following the [React task guideline](https://github.com/mate-academy/react_task-guideline#react-tasks-guideline).
-- Use the [React TypeScript cheat sheet](https://mate-academy.github.io/fe-program/js/extra/react-typescript).
-- Replace `<your_account>` with your Github username in the [DEMO LINK](https://Pobedasg.github.io/react_todo-app-with-api/) and add it to the PR description.
+This is a Mate academy course project, so the repository started from their template (lint, format and deploy scripts come from it). The application code in `src/` is mine. The original task description is in the [Mate academy repository](https://github.com/mate-academy/react_todo-app-with-api).
